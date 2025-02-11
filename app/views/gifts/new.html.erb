@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fireworks and Flying Cat</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        #fireworksCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        #flyingCat {
+            position: absolute;
+            width: 350px; /* Increased width for the flying cat */
+            display: none; /* Hide initially */
+            z-index: 1; /* Ensure it appears above the canvas */
+        }
+        #mail {
+            position: absolute;
+            width: 150px; /* Adjust width accordingly */
+            display: none; /* Hide initially */
+            z-index: 2; /* Ensure it appears above everything */
+            cursor: pointer; /* Change cursor to pointer when hovering */
+        }
+        .flower {
+            position: absolute;
+            width: 80px; /* Increased size of flowers */
+            opacity: 0; /* Start invisible */
+            transition: opacity 1s; /* Fade in transition */
+        }
+    </style>
+</head>
+<body>
+    <div class="flex items-center justify-center h-screen relative overflow-hidden">
+        <canvas id="fireworksCanvas"></canvas>
+        <img id="flyingCat" src="https://file.aiquickdraw.com/imgcompressed/img/compressed_39e179501e3f1166b68b2b6cee64a151.webp" alt="Flying Cat"> <!-- Updated flying cat URL -->
+        <img id="mail" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjLvX3W45N6HLjvuqDa3WkStuMtTrumy0pO9U8VENhY0cvcBTgggjmi6sG1Yfo9yoT5TI&usqp=CAU" alt="Mail Love"> <!-- Updated mail URL -->
+    </div>
+
+    <script>
+        const canvas = document.getElementById('fireworksCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        document.body.style.backgroundColor = 'black'; // Set background to black
+
+        // Fireworks Functions
+        function createFirework(x, y) {
+            const particles = [];
+            const numParticles = 100;
+            for (let i = 0; i < numParticles; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 6 + 2; // Increased speed
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    life: Math.random() * 60 + 60,
+                    color: `hsl(${Math.random() * 360}, 100%, 50%)`
+                });
+            }
+            return particles;
+        }
+
+        function drawParticles(particles) {
+            particles.forEach((particle, index) => {
+                ctx.fillStyle = particle.color;
+                ctx.beginPath();
+                ctx.arc(particle.x, particle.y, 5, 0, Math.PI * 2); // Increased size of fireworks
+                ctx.fill();
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+                particle.life -= 1;
+                if (particle.life <= 0) {
+                    particles.splice(index, 1);
+                }
+            });
+        }
+
+        const fireworks = [];
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            fireworks.forEach((particles, index) => {
+                drawParticles(particles);
+                if (particles.length === 0) {
+                    fireworks.splice(index, 1);
+                }
+            });
+            requestAnimationFrame(animate);
+        }
+
+        function triggerFirework() {
+            const x = Math.random() * canvas.width;
+            const y = Math.random() * (canvas.height / 2);
+            fireworks.push(createFirework(x, y));
+        }
+
+        let fireworkCount = 0;
+
+        const fireworkInterval = setInterval(() => {
+            if (fireworkCount < 10) {
+                triggerFirework();
+                fireworkCount++;
+            } else {
+                clearInterval(fireworkInterval);
+                showLoveYouSign();
+                dropCat();
+                createHeartFirework(); // Call to create heart fireworks
+            }
+        }, 500);
+
+        function showLoveYouSign() {
+            const x = canvas.width / 2;
+            const y = canvas.height / 2;
+            ctx.font = 'bold 60px Arial';
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'center';
+            ctx.fillText('I Love You!', x, y);
+            
+            const explosionParticles = createFirework(x, y);
+            fireworks.push(explosionParticles);
+            
+            setTimeout(() => {
+                explosionParticles.forEach(particle => {
+                    particle.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                });
+            }, 100);
+        }
+
+        // Cat animation
+        function dropCat() {
+            const cat = document.getElementById('flyingCat');
+            cat.style.display = 'block'; // Show the cat initially
+            let catY = -400; // Start above the screen (adjust if needed)
+
+            const catAnimation = setInterval(() => {
+                if (catY < canvas.height / 2 - 175) { // Adjust for the increased size
+                    catY += 5; // Move the cat down
+                    cat.style.top = catY + 'px';
+                } else {
+                    clearInterval(catAnimation); // Stop cat animation
+                    dropMail(1); // Replace with the actual gift ID
+                }
+            }, 50);
+        }
+
+        function dropMail(giftId) {
+            const mail = document.getElementById('mail');
+            mail.style.display = 'block'; // Show the mail
+            mail.style.left = (canvas.width / 2 - 75) + 'px'; // Center mail horizontally
+            mail.style.top = (canvas.height / 2 - 75) + 'px'; // Position mail at the center
+            
+            // Add click event to mail that redirects to a specific gift
+            mail.onclick = () => {
+                window.location.href = `/gifts/${giftId}`; // Redirect to the specific gift show page
+            };
+
+            // Trigger flower animation around the cat and mail
+            animateFlowers();
+        }
+
+        function animateFlowers() {
+            const flowerCount = 20; // Number of flowers
+            const flowers = [];
+            for (let i = 0; i < flowerCount; i++) {
+                const flower = document.createElement('img');
+                flower.src = 'https://png.pngtree.com/png-clipart/20230426/original/pngtree-a-small-pink-white-flower-picture-image_5803483.png'; // Flower image
+                flower.classList.add('flower');
+                document.body.appendChild(flower);
+                flowers.push(flower);
+            }
+
+            flowers.forEach((flower, index) => {
+                const angle = Math.random() * Math.PI * 2; // Random angle
+                const radius = Math.random() * 100 + 50; // Random radius
+                const x = canvas.width / 2 + Math.cos(angle) * radius;
+                const y = canvas.height / 2 + Math.sin(angle) * radius;
+
+                flower.style.left = x + 'px';
+                flower.style.top = y + 'px';
+                flower.style.opacity = 1; // Fade in
+                setTimeout(() => {
+                    flower.style.opacity = 0; // Fade out
+                    setTimeout(() => {
+                        flower.remove(); // Remove flower after fading out
+                    }, 1000);
+                }, 1500); // Delay for fade out
+            });
+        }
+
+        function createHeartFirework() {
+            const heartParticles = [];
+            const numParticles = 100;
+            const x = canvas.width / 2;
+            const y = canvas.height / 2;
+            for (let i = 0; i < numParticles; i++) {
+                const angle = (i / numParticles) * (Math.PI * 2);
+                const radius = 100; // Adjust the size of the heart
+                const speed = Math.random() * 2 + 1; // Random speed for particles
+                heartParticles.push({
+                    x: x + (16 * Math.sin(angle) ** 3),
+                    y: y - (13 * Math.cos(angle) - 5 * Math.cos(2 * angle) - 2 * Math.cos(3 * angle) - Math.cos(4 * angle)),
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    life: Math.random() * 60 + 60,
+                    color: 'red' // Heart color
+                });
+            }
+            fireworks.push(heartParticles);
+        }
+
+        function drawHeartParticles(particles) {
+            particles.forEach((particle, index) => {
+                ctx.fillStyle = particle.color;
+                ctx.beginPath();
+                ctx.arc(particle.x, particle.y, 5, 0, Math.PI * 2); // Increased size of fireworks
+                ctx.fill();
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+                particle.life -= 1;
+                if (particle.life <= 0) {
+                    particles.splice(index, 1);
+                }
+            });
+        }
+
+        animate(); // Start animation loop
+    </script>
+</body>
+</html>

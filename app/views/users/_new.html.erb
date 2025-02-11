@@ -1,0 +1,16 @@
+<div class="flex items-center justify-center h-screen">
+  <div class="w-full max-w-md p-8 space-y-4 bg-white rounded-lg shadow-lg">
+    <h2 class="text-2xl font-bold text-center">New User</h2>
+    <%= form_for @user, url: users_path do |f| %>
+      <div>
+        <%= f.label :email, class: "block text-sm font-medium text-gray-700" %>
+        <%= f.email_field :email, class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50" %>
+      </div>
+      <div>
+        <%= f.label :password, class: "block text-sm font-medium text-gray-700" %>
+        <%= f.password_field :password, class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50" %>
+      </div>
+      <%= f.submit "Create User", class: "w-full px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600 transition" %>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,10 @@
+.yes-button {
+    transform: scale(0.8);
+    transition: transform 200ms;
+  }
+  
+  .no-button {
+    transform: scale(0.8);
+    transition: transform 200ms;
+  }
+  

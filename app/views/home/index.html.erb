@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GIFT</title>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= stylesheet_link_tag 'application', media: 'all' %>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(270deg, #ff6b81, #a65eaa);
+      background-size: 400% 400%;
+      animation: gradientAnimation 15s ease infinite;
+    }
+
+    @keyframes gradientAnimation {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+  </style>
+</head>
+<body class="font-sans">
+  <div data-controller="valentine" class="flex flex-col items-center justify-center h-screen">
+    <div id="valentine-prompt" class="text-center p-6 rounded-lg bg-white shadow-lg">
+      <h1 class="text-5xl font-bold mb-4 animate__animated animate__fadeInDown">Will you be my Valentine?</h1>
+      <div class="flex justify-center space-x-6">
+        <button data-action="click->valentine#respondYes" data-valentine-target="yesButton" id="yes-button" class="yes-button bg-red-500 text-white px-6 py-3 rounded-full shadow hover:bg-red-600 transition-transform transform hover:scale-110">
+          Yes
+        </button>
+        <button data-action="click->valentine#respondNo" data-valentine-target="noButton" id="no-button" class="no-button bg-gray-300 text-black px-6 py-3 rounded-full shadow hover:bg-gray-400 transition-transform transform hover:scale-110">
+          No
+        </button>
+      </div>
+      <div data-valentine-target="fireworks" class="hidden">
+        <!-- Fireworks animation goes here -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const messages = [
+      "Are you sure?",
+      "Really sure??",
+      "Are you positive?",
+      "Hon please...",
+      "Just think about it!",
+      "If you say no, I will be really sad...",
+      "I will be very sad...",
+      "I will be very very very sad...",
+      "Ok fine, I will stop asking...",
+      "Just kidding, say yes please! ❤️"
+    ];
+
+    let messageIndex = 0;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const noButton = document.querySelector('.no-button');
+      const yesButton = document.querySelector('.yes-button');
+
+      noButton.addEventListener('click', () => {
+        noButton.textContent = messages[messageIndex];
+        messageIndex = (messageIndex + 1) % messages.length;
+        const currentSize = parseFloat(window.getComputedStyle(yesButton).fontSize);
+        yesButton.style.fontSize = `${currentSize * 1.5}px`;
+      });
+
+      yesButton.addEventListener('click', () => {
+        window.location.href = "<%= new_gift_path %>"; // Redirect to gifts#new
+      });
+    });
+  </script>
+</body>
+</html>
