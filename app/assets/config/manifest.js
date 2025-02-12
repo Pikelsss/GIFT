@@ -4,3 +4,4 @@
 //= link_tree ../../javascript .js
 //= link_tree ../../../vendor/javascript .js
 //= link radwimps_yumetourou.mp3
+//= link heart.png

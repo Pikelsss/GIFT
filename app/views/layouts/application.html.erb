@@ -4,11 +4,31 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GIFT</title>
+  
   <%= csp_meta_tag %>
   <%= stylesheet_link_tag 'application', media: 'all' %>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="<%= asset_path 'manifest.json' %>">
+  <meta name="theme-color" content="#000000">
+
+  <!-- App Icons -->
+  <link rel="icon" type="image/png" sizes="192x192" href="<%= asset_path 'heart.png' %>">
+  <link rel="icon" type="image/png" sizes="512x512" href="<%= asset_path 'heart.png' %>">
 </head>
 <body class="bg-gray-100 font-sans">
   <%= yield %>
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/service-worker.js")
+          .then((registration) => console.log("Service Worker registered!", registration))
+          .catch((error) => console.log("Service Worker registration failed:", error));
+      });
+    }
+  </script>
 </body>
 </html>
